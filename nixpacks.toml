@@ -1,0 +1,21 @@
+[variables]
+CI = 'true'
+NIXPACKS_METADATA = 'node'
+NODE_ENV = 'production'
+NPM_CONFIG_PRODUCTION = 'false'
+[phases.build]
+dependsOn = ['install']
+cmds = ['pnpm build']
+
+[phases.install]
+dependsOn = ['setup']
+cmds = ['pnpm install --no-frozen-lockfile']
+
+[phases.setup]
+nixPkgs = [
+    'nodejs_18',
+    'pnpm-8_x',
+]
+
+[start]
+cmd = 'pnpm run start'
