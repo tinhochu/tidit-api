@@ -10,11 +10,6 @@ export const apiKeyAuth = (req: AuthenticatedRequest, res: Response, next: NextF
   const apiKey = req.headers['x-api-key'] || req.headers['authorization']?.replace('Bearer ', '')
 
   if (!apiKey) {
-    logger.warn('API request without API key', {
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      path: req.path,
-    })
     res.status(401).json({
       error: true,
       message: 'API key is required',
@@ -36,11 +31,6 @@ export const apiKeyAuth = (req: AuthenticatedRequest, res: Response, next: NextF
   }
 
   if (apiKey !== validApiKey) {
-    logger.warn('Invalid API key attempt', {
-      ip: req.ip,
-      userAgent: req.get('User-Agent'),
-      path: req.path,
-    })
     res.status(403).json({
       error: true,
       message: 'Invalid API key',
