@@ -50,7 +50,8 @@ export const makeRapidApiRequest = async <T>(url: string, context: string): Prom
   })
 
   if (!response.ok) {
-    const error = new Error(`RapidAPI request failed with status ${response.status}`)
+    const body = JSON.parse(await response.text())
+    const error = new Error(`RapidAPI request failed:${body.message}`)
     ;(error as any).status = response.status
     throw error
   }
