@@ -1,6 +1,5 @@
 import { Router } from 'express'
 
-import logger from '../logger'
 import { AuthenticatedRequest } from '../middleware/auth'
 
 const rapidApiUrl = 'realtor-search.p.rapidapi.com'
@@ -45,7 +44,6 @@ router.get('/auto-complete', async (req: AuthenticatedRequest, res: any) => {
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    logger.error('Error searching properties:', error)
     res.status(500).json({
       error: true,
       message: 'Internal server error',
