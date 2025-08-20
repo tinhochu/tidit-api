@@ -2,7 +2,6 @@ import { Response, Router } from 'express'
 
 import logger from '../logger'
 import { AuthenticatedRequest } from '../middleware/auth'
-import { scrapeOGImage } from '../services/image-scraper'
 import {
   ERROR_MESSAGES,
   RAPID_API_CONFIG,
@@ -90,10 +89,6 @@ router.get(
       const response = await makeRapidApiRequest<RapidApiResponse<any>>(url, 'property-detail')
 
       logger.info(`Property detail retrieved successfully for ID: ${trimmedId}`)
-
-      const ogImage = await scrapeOGImage(`https://realtor.com`)
-
-      logger.info({ ogImage })
 
       res.json({
         success: true,
