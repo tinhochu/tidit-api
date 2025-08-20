@@ -46,13 +46,13 @@ router.get(
       const trimmedQuery = query.trim()
       const url = `${RAPID_API_CONFIG.baseUrl}/locations/v2/auto-complete?input=${encodeURIComponent(trimmedQuery)}`
 
-      const response = await makeRapidApiRequest<RapidApiResponse<any>>(url, 'auto-complete')
+      const data = await makeRapidApiRequest<RapidApiResponse<any>>(url, 'auto-complete')
 
       logger.info(`Property search completed successfully for query: ${trimmedQuery}`)
 
       res.json({
         success: true,
-        data: response.data,
+        data,
         query: trimmedQuery,
         timestamp: new Date().toISOString(),
       })
