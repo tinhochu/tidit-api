@@ -44,7 +44,7 @@ router.get(
       }
 
       const trimmedQuery = query.trim()
-      const url = `${RAPID_API_CONFIG.baseUrl}/properties/auto-complete?input=${encodeURIComponent(trimmedQuery)}`
+      const url = `${RAPID_API_CONFIG.baseUrl}/locations/v2/auto-complete?input=${encodeURIComponent(trimmedQuery)}`
 
       const response = await makeRapidApiRequest<RapidApiResponse<any>>(url, 'auto-complete')
 
@@ -84,7 +84,7 @@ router.get(
 
       const trimmedId = id.trim()
 
-      const url = `${RAPID_API_CONFIG.baseUrl}/properties/detail?propertyId=${trimmedId}`
+      const url = `${RAPID_API_CONFIG.baseUrl}/properties/v3/detail?property_id=${trimmedId}`
 
       const response = await makeRapidApiRequest<RapidApiResponse<any>>(url, 'property-detail')
 

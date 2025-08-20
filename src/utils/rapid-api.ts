@@ -4,8 +4,8 @@ import logger from '../logger'
 
 // Constants
 export const RAPID_API_CONFIG = {
-  host: 'realtor-search.p.rapidapi.com',
-  baseUrl: 'https://realtor-search.p.rapidapi.com',
+  host: 'realty-in-us.p.rapidapi.com',
+  baseUrl: 'https://realty-in-us.p.rapidapi.com',
 } as const
 
 export const ERROR_MESSAGES = {
