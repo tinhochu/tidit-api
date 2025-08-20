@@ -39,15 +39,18 @@ export async function scrapeOGImage(url: string) {
     // Observe the page
     logger.info(`Observing the page: ${url}`)
     const observations = await page.observe({
-      instruction: 'find the .hero-container .carousel-photo',
+      instruction: 'Observe the page and look for the .hero-container div',
     })
 
-    if (observations.length === 0) return null
+    if (observations.length === 0) {
+      logger.info({ observations })
+      return null
+    }
 
     // Extract og:image
     logger.info(`Extracting og:image from the page: ${url}`)
     const ogImageObject = await page.extract({
-      instruction: 'Extract the image source from the .hero-container .carousel-photo',
+      instruction: 'Extract the first image source from the .hero-container div',
       schema: z.object({
         src: z.string().url(),
       }),

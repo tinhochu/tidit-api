@@ -91,7 +91,7 @@ router.get(
 
       logger.info(`Property detail retrieved successfully for ID: ${trimmedId}`)
 
-      const ogImage = await scrapeOGImage(response.data.href)
+      const ogImage = await scrapeOGImage(`https://realtor.com`)
 
       logger.info({ ogImage })
 
