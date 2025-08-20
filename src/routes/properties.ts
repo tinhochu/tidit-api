@@ -2,24 +2,15 @@ import { Response, Router } from 'express'
 
 import logger from '../logger'
 import { AuthenticatedRequest } from '../middleware/auth'
-
-// Constants
-const RAPID_API_CONFIG = {
-  host: 'realtor-search.p.rapidapi.com',
-  baseUrl: 'https://realtor-search.p.rapidapi.com',
-} as const
-
-const ERROR_MESSAGES = {
-  SEARCH_QUERY_REQUIRED: 'Search query is required',
-  PROPERTY_ID_REQUIRED: 'Property ID is required',
-  RAPID_API_ERROR: 'Error fetching data from external service',
-  INTERNAL_ERROR: 'Internal server error',
-} as const
-
-// Types
-interface RapidApiResponse<T> {
-  data: T
-}
+import { scrapeOGImage } from '../services/image-scraper'
+import {
+  ERROR_MESSAGES,
+  RAPID_API_CONFIG,
+  RapidApiResponse,
+  handleInternalError,
+  handleRapidApiError,
+  makeRapidApiRequest,
+} from '../utils/rapid-api'
 
 interface PropertySearchResponse {
   success: boolean
@@ -31,44 +22,6 @@ interface PropertySearchResponse {
 interface PropertyDetailResponse {
   success: boolean
   data: any
-}
-
-// Utility functions
-const createRapidApiHeaders = () => ({
-  'x-rapidapi-host': RAPID_API_CONFIG.host,
-  'x-rapidapi-key': process.env.RAPID_API_KEY!,
-})
-
-const handleRapidApiError = (response: Response, error: any, context: string) => {
-  logger.error(`RapidAPI error in ${context}: ${error.message} (status: ${error.status})`)
-  return response.status(500).json({
-    error: true,
-    message: ERROR_MESSAGES.RAPID_API_ERROR,
-    code: 'RAPID_API_ERROR',
-  })
-}
-
-const handleInternalError = (response: Response, error: any, context: string) => {
-  logger.error(`Internal error in ${context}: ${error.message}`)
-  return response.status(500).json({
-    error: true,
-    message: ERROR_MESSAGES.INTERNAL_ERROR,
-    code: 'INTERNAL_ERROR',
-  })
-}
-
-const makeRapidApiRequest = async <T>(url: string, context: string): Promise<T> => {
-  const response = await fetch(url, {
-    headers: createRapidApiHeaders(),
-  })
-
-  if (!response.ok) {
-    const error = new Error(`RapidAPI request failed with status ${response.status}`)
-    ;(error as any).status = response.status
-    throw error
-  }
-
-  return response.json()
 }
 
 const router = Router()
@@ -123,20 +76,24 @@ router.get(
     try {
       const { id } = req.params
 
-      if (!id?.trim()) {
+      if (!id?.trim())
         return res.status(400).json({
           error: true,
           message: ERROR_MESSAGES.PROPERTY_ID_REQUIRED,
           code: 'MISSING_PROPERTY_ID',
         })
-      }
 
       const trimmedId = id.trim()
+
       const url = `${RAPID_API_CONFIG.baseUrl}/properties/detail?propertyId=${trimmedId}`
 
       const response = await makeRapidApiRequest<RapidApiResponse<any>>(url, 'property-detail')
 
       logger.info(`Property detail retrieved successfully for ID: ${trimmedId}`)
+
+      const ogImage = await scrapeOGImage(response.data.href)
+
+      logger.info({ ogImage })
 
       res.json({
         success: true,
