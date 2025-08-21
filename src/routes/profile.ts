@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import logger from '../logger'
 import { appwriteUsers } from '../utils/appwrite'
 
 const router = Router()
@@ -13,6 +14,8 @@ router.put('/:userId', async (req, res) => {
   const user = await appwriteUsers.get(userId)
 
   const updatedPrefs = await appwriteUsers.updatePrefs(user.$id, { ...user.prefs, ...body.prefs })
+
+  logger.info(`Updated user preferences for user ${userId} ${JSON.stringify(updatedPrefs)}`)
 
   res.json({ data: { userId, ...updatedPrefs } })
 })
