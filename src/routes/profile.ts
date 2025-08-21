@@ -5,6 +5,20 @@ import { appwriteUsers } from '../utils/appwrite'
 
 const router = Router()
 
+router.get('/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params
+    const userPrefs = await appwriteUsers.getPrefs(userId)
+
+    logger.info(`Got user preferences for user ${userId} ${JSON.stringify(userPrefs)}`)
+
+    res.json({ data: { userId, ...userPrefs }, success: true, timestamp: new Date().toISOString() })
+  } catch (error) {
+    logger.error(`Error getting user preferences for user ${error}`)
+    res.status(500).json({ error: true, message: 'Error getting user preferences' })
+  }
+})
+
 router.put('/:userId', async (req, res) => {
   try {
     const { userId } = req.params
