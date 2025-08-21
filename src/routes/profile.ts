@@ -8,11 +8,11 @@ const router = Router()
 router.get('/:userId', async (req, res) => {
   try {
     const { userId } = req.params
-    const userPrefs = await appwriteUsers.getPrefs(userId)
+    const user = await appwriteUsers.get(userId)
 
-    logger.info(`Got user preferences for user ${userId} ${JSON.stringify(userPrefs)}`)
+    logger.info(`Got user preferences for user ${userId} ${JSON.stringify(user.prefs)}`)
 
-    res.json({ data: { userId, ...userPrefs }, success: true, timestamp: new Date().toISOString() })
+    res.json({ data: { userId: user.$id, ...user.prefs }, success: true, timestamp: new Date().toISOString() })
   } catch (error) {
     logger.error(`Error getting user preferences for user ${error}`)
     res.status(500).json({ error: true, message: 'Error getting user preferences' })
