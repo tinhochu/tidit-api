@@ -13,7 +13,7 @@ router.put('/:userId', async (req, res) => {
 
   const user = await appwriteUsers.get(userId)
 
-  const updatedPrefs = await appwriteUsers.updatePrefs(user.$id, { ...user.prefs, ...body.prefs })
+  const updatedPrefs = await appwriteUsers.updatePrefs(userId, { ...user.prefs, ...body.prefs })
 
   logger.info(`Updated user preferences for user ${userId} ${JSON.stringify(updatedPrefs)}`)
 
