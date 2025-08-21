@@ -5,6 +5,7 @@ import morgan from 'morgan'
 import { connectMongo } from './db/mongo'
 import logger from './logger'
 import { apiKeyAuth } from './middleware/auth'
+import profileRoutes from './routes/profile'
 import propertiesRoutes from './routes/properties'
 
 dotenv.config()
@@ -44,6 +45,9 @@ const apiRouter = express.Router()
 
   // Protected routes - require API key
   apiRouter.use('/properties', apiKeyAuth, propertiesRoutes)
+
+  // Protected routes - require API key
+  apiRouter.use('/profile', apiKeyAuth, profileRoutes)
 
   // Start the server
   app.listen(process.env.PORT || 8000, () => logger.info(`🚀 Server running on Port: ${process.env.PORT}`))
