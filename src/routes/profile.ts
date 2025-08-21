@@ -11,9 +11,7 @@ router.put('/:userId', async (req, res) => {
 
   if (!userId) return res.status(400).json({ error: true, message: 'User ID is required' })
 
-  const user = await appwriteUsers.get(userId)
-
-  const updatedPrefs = await appwriteUsers.updatePrefs(userId, { ...user.prefs, ...body.prefs })
+  const updatedPrefs = await appwriteUsers.updatePrefs(userId, body.prefs)
 
   logger.info(`Updated user preferences for user ${userId} ${JSON.stringify(updatedPrefs)}`)
 
