@@ -15,7 +15,7 @@ router.put('/:userId', async (req, res) => {
 
   logger.info(`Updated user preferences for user ${userId} ${JSON.stringify(updatedPrefs)}`)
 
-  res.json({ data: { userId, ...updatedPrefs } })
+  res.json({ data: { userId, ...updatedPrefs }, success: true, timestamp: new Date().toISOString() })
 })
 
 export default router
