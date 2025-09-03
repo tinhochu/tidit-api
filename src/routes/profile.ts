@@ -37,4 +37,22 @@ router.put('/:userId', async (req, res) => {
   }
 })
 
+router.delete('/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params
+
+    if (!userId) return res.status(400).json({ error: true, message: 'User ID is required' })
+
+    // Delete the user account from Appwrite
+    await appwriteUsers.delete(userId)
+
+    logger.info(`Deleted user account ${userId}`)
+
+    res.json({ success: true, message: 'Account deleted successfully', timestamp: new Date().toISOString() })
+  } catch (error) {
+    logger.error(`Error deleting user account ${error}`)
+    res.status(500).json({ error: true, message: 'Error deleting user account' })
+  }
+})
+
 export default router

@@ -13,11 +13,10 @@ dotenv.config()
 const app = express()
 
 // Custom morgan token to get the IP address
-morgan.token('ip', (req) => {
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-  return Array.isArray(ip) ? ip[0] : ip
-})
-morgan.token('body', (req: any) => JSON.stringify(req.body || {}))
+morgan.token('ip', (req: any) => req.ip || req.connection.remoteAddress || 'unknown')
+
+// Custom morgan token to get the request body
+morgan.token('body', (req: any) => JSON.stringify(req.body))
 
 // Use Morgan middleware for request logging
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms - IP: :ip - Body: :body'))
